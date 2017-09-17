@@ -1,8 +1,12 @@
 package co.edu.upb.appmed.appmed;
 
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -12,9 +16,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
+
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    private Locale locale;
+    private Configuration config = new Configuration();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +78,34 @@ public class MainActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            AlertDialog.Builder b = new AlertDialog.Builder(this);
+            b.setTitle(getResources().getString(R.string.action_settings));
+            String[] types = getResources().getStringArray(R.array.languages);
+            b.setItems(types, new DialogInterface.OnClickListener(){
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                    switch (which) {
+                        case 0:
+                            locale = new Locale("es");
+                            config.setLocale(locale);
+                            break;
+                        case 1:
+                            locale = new Locale("en");
+                            config.setLocale(locale);
+                            break;
+                        case 2:
+                            locale = new Locale("de");
+                            config.setLocale(locale);
+                            break;
+                    }
+                    getResources().updateConfiguration(config, null);
+                    Intent refresh = new Intent(MainActivity.this, MainActivity.class);
+                    startActivity(refresh);
+                    finish();
+                }
+            });
+            b.show();
             return true;
         }
 
@@ -80,11 +118,7 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
+        if (id == R.id.nav_slideshow) {
 
         } else if (id == R.id.nav_manage) {
 
